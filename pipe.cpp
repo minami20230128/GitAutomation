@@ -6,10 +6,11 @@ class Pipe
 {
     private:
         FILE* fp;
-        char buf[256];
+        char* buf;
+        std::string result;
 
     public:
-        bool open(char* command)
+        bool open(const char* command)
         {
             if ((fp = popen(command, "r")) == NULL)
             {
@@ -20,16 +21,15 @@ class Pipe
             return true;
         }
 
-        void getResult()
+        std::string getResult()
         {
-
-            while (fgets(buf, sizeof(buf), fp) != NULL) {
-                printf("%s", buf);
+            buf = (char*)malloc(256);
+            while (fgets(buf, sizeof(buf), fp) != NULL) 
+            {
+                result += buf;
             }
-        }
-
-        void close()
-        {
             pclose(fp);
+
+            return result;
         }
 };

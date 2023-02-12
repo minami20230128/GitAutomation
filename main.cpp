@@ -1,49 +1,76 @@
-#include <stdio.h>
+#include <iostream>
 #include <stdlib.h>
-#include <string>
+#include "main.h"
 #include "pipe.cpp"
 
 int main () 
 {
-    std::string command;
-    scanf("%s", &command);
-    
-    if (empty(command) || command == NULL) 
+    int choice;
+    std::string result;
+    std::string directry;
+
+    std::cout << "ディレクトリを入力してください" << std::endl;
+    std::cin >> directry;
+    result = setDirectry(directry);
+    std::cout << result << std::endl;
+
+    std::cout << "実行したいコマンドを選択してください" << std::endl;
+    std::cin >> choice;
+
+    switch(choice)
     {
-        fprintf(stderr, "引数に「コマンド」を入力して下さい！\n");
-        return EXIT_FAILURE;
+    case 1:
+        result = add();
+        break;
+    case 2:
+        result = commit();
+        break;
     }
-    
-    auto pipe = std::make_unique<Pipe>();
-    pipe->open(command.c_str());
-    pipe->getResult();
-    pipe->close();
+
+    std::cout << result << std::endl;
 
     return 0;
 }
 
-void add()
+std::string add()
 {
-    auto filename = setDirectry();
+    std::string filename;
+    std::cout << "addしたいファイル名を入力してください" << std::endl;
+    std::cin >> filename;
     auto pipe = std::make_unique<Pipe>();
-    std::string command = "add {} main", filename;
-    pipe->open(command.c_str());
-    pipe->getResult();
-    pipe->close();
+    std::string command = "git add " + filename + "  main";
+    std::string result = executeCommand(command.c_str());
 
+    return result;
 }
 
-std::string setDirectry(Pipe pipe)
+std::string commit()
+{
+    auto pipe = std::make_unique<Pipe>();
+    std::string command = "git remote";
+    std::string result = executeCommand(command.c_str());
+
+    command = "git branch";
+    result = executeCommand(command.c_str());
+
+    return result;
+}
+
+std::string setDirectry(std::string directry)
 {
     std::string filename;
     auto pipe = std::make_unique<Pipe>();
-    char* command = "open /Desktop";
-    pipe->open(command);
-    pipe->close();
-    return filename;
+    std::string command = "cd " + directry;
+    std::string result = executeCommand(command.c_str());
+
+    return result;
 }
 
-void executeCommand()
+std::string executeCommand(std::string command)
 {
+    auto pipe = std::make_unique<Pipe>();
+    pipe->open(command.c_str());
+    std::string result = pipe->getResult();
 
+    return result;
 }
