@@ -12,9 +12,9 @@ int main ()
     std::string directry;
     std::cout << "ディレクトリを入力してください" << std::endl;
     std::cin >> directry;
-    
+
     std::string result;
-    result = setDirectry(directry);
+    result = set_directry(directry);
     std::cout << result << std::endl;
 
     int choice;
@@ -44,7 +44,7 @@ std::string add()
     std::cout << "addしたいファイル名を入力してください" << std::endl;
     std::cin >> filename;
     std::string command = std::format("git add {} main", filename);
-    std::string result = executeCommand(command.c_str());
+    std::string result = execute_command(command.c_str());
 
     return result;
 }
@@ -55,7 +55,7 @@ std::string commit()
     std::cout << "メッセージを入力してください" << std::endl;
     std::cin >> message;
     std::string command = "git commit -m " + message;
-    std::string result = executeCommand(command.c_str());
+    std::string result = execute_command(command.c_str());
 
     return result;
 }
@@ -63,25 +63,25 @@ std::string commit()
 std::string push()
 {
     std::string command = "git remote";
-    std::string repositry = executeCommand(command.c_str());
+    std::string repositry = execute_command(command.c_str());
     command = "git branch";
-    std::string result = executeCommand(command.c_str());
+    std::string result = execute_command(command.c_str());
     std::vector<std::string> branches;
     boost::split(branches, result, boost::is_any_of("¥n"));
 
     for(auto branch: branches)
     {
-         if(branch.find("*")!=-1)
+        if(branch.find("*")!=-1)
         {
             command = "git push " + repositry + branch;
-            result = executeCommand(command.c_str());
+            result = execute_command(command.c_str());
         }
     }
 
     return result;
 }
 
-std::string setDirectry(std::string directry)
+std::string set_directry(std::string directry)
 {
     std::string filename;
     if (chdir(directry.c_str()) == -1){
@@ -89,16 +89,16 @@ std::string setDirectry(std::string directry)
     }
 
     std::string command ="ls";//テストコード
-    std::string result = executeCommand(command.c_str());//テストコード
+    std::string result = execute_command(command.c_str());//テストコード
 
     return result;
 }
 
-std::string executeCommand(std::string command)
+std::string execute_command(std::string command)
 {
     auto pipe = std::make_unique<Pipe>();
     pipe->open(command.c_str());
-    std::string result = pipe->getResult();
+    std::string result = pipe->get_result();
 
     return result;
 }
