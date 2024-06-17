@@ -2,21 +2,22 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <vector>
+#include <format>
 #include <boost/algorithm/string.hpp>
 #include "main.h"
 #include "pipe.cpp"
 
 int main () 
 {
-    int choice;
-    std::string result;
     std::string directry;
-
     std::cout << "ディレクトリを入力してください" << std::endl;
     std::cin >> directry;
+    
+    std::string result;
     result = setDirectry(directry);
     std::cout << result << std::endl;
 
+    int choice;
     std::cout << "実行したいコマンドを選択してください" << std::endl;
     std::cin >> choice;
 
@@ -42,7 +43,7 @@ std::string add()
     std::string filename;
     std::cout << "addしたいファイル名を入力してください" << std::endl;
     std::cin >> filename;
-    std::string command = "git add " + filename + "  main";
+    std::string command = std::format("git add {} main", filename);
     std::string result = executeCommand(command.c_str());
 
     return result;
@@ -65,13 +66,12 @@ std::string push()
     std::string repositry = executeCommand(command.c_str());
     command = "git branch";
     std::string result = executeCommand(command.c_str());
-
     std::vector<std::string> branches;
     boost::split(branches, result, boost::is_any_of("¥n"));
 
     for(auto branch: branches)
     {
-        if(branch.find("*")!=-1)
+         if(branch.find("*")!=-1)
         {
             command = "git push " + repositry + branch;
             result = executeCommand(command.c_str());
